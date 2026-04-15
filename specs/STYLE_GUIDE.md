@@ -210,6 +210,24 @@ The side menu provides global navigation and should be used for app-level action
 - **Navigation:** When a menu item is clicked, close the menu first, then navigate to the target screen.
 - **Disabled on Sub-pages:** On detail/edit pages, replace hamburger with back button and disable side menu.
 
+#### Version String
+- **Location:** Footer area at the bottom of the side menu content.
+- **Format:** `v{version}.{build}` where:
+  - `{version}`: The app version from `android/app/build.gradle` (`versionName`).
+  - `{build}`: The build number from `android/app/build.gradle` (`versionCode`).
+- **Data Source:** Retrieved via `@capacitor/app` plugin (`App.getInfo()`).
+- **Fallback:** Display `v99.99.99.99` when running in local development (where `@capacitor/app` returns empty values).
+- **Container:**
+  - Class: `side-menu-footer`.
+  - Position: At the bottom of the side menu, after menu items.
+  - Padding: `1rem` (16px).
+  - Text alignment: `center`.
+  - Font-size: `0.875rem`.
+  - Color: `var(--text-secondary)` or muted gray.
+- **Example:**
+  - Production: `v1.0.0.1` (versionName "1.0.0", versionCode 1).
+  - Local dev: `v99.99.99.99`.
+
 #### Structure Example
 ```html
 {isOpen && <div class="side-menu-backdrop" onClick={closeMenu} />}
