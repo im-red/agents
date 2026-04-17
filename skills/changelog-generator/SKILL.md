@@ -24,3 +24,8 @@ This skill generates a concise, feature-focused changelog based on the differenc
 4. **Output Format**:
    - Save all generated changelog content into a **single file** (e.g., `CHANGELOG.md` or as requested by the user).
    - Additionally, output a commit message for this changelog update. Use **`vX.Y.Z`** as the version placeholder in the commit message.
+
+5. **Git Tag Message**:
+   - Also generate a **tag message** for the release tag (e.g., `vX.Y.Z`).
+   - The tag message should contain the version number on the first line, followed by a summary of the changes (same categories as the changelog: new features, improvements, bug fixes, etc.).
+   - Output the tag message along with the commit message so the user can create the tag with `git tag -a vX.Y.Z -m "<tag message>"`.
