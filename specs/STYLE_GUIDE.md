@@ -224,6 +224,7 @@ The side menu provides global navigation and should be used for app-level action
   - Text alignment: `center`.
   - Font-size: `0.875rem`.
   - Color: `var(--text-secondary)` or muted gray.
+  - Border-top: `1px solid var(--surface)`.
 - **Example:**
   - Production: `v1.0.0-b1` (versionName "1.0.0", versionCode 1).
   - Local dev: `v99.99.99-b99`.
