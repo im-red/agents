@@ -187,6 +187,10 @@ The side menu provides global navigation and should be used for app-level action
 - **Icons:** Use emoji or icon font, placed before text.
 - **Active State:** Background changes to `var(--surface)` on `:active`.
 - **No Hover:** Do not implement `:hover` styles (irrelevant on mobile).
+- **Divider:** Use a `<div class="side-menu-divider" />` to separate semantic sections (e.g. before "Settings").
+  - Height: `1px`
+  - Background: `var(--surface)`
+  - Margin: `0.5rem 1rem`
 
 #### Animation
 - **Open:** Slide in from left using `transform: translateX(-100%)` → `translateX(0)`.
@@ -241,6 +245,8 @@ The side menu provides global navigation and should be used for app-level action
     <button class="side-menu-item">🗑️ Trash Bin</button>
     <button class="side-menu-item">📤 Export Data</button>
     <button class="side-menu-item">📥 Import Data</button>
+    <div class="side-menu-divider"></div>
+    <button class="side-menu-item">⚙️ Settings</button>
   </div>
 </div>
 ```
