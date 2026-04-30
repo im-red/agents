@@ -68,8 +68,7 @@ git checkout master
 git merge feature-branch
 
 # 5. Push branch and tag
-git push origin master
-git push origin vX.Y.Z
+git push origin master feature-branch vX.Y.Z
 
 # 6. Switch back
 git checkout feature-branch
