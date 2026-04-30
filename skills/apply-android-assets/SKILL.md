@@ -19,24 +19,64 @@ Invoke this skill when:
 
 ## Instructions
 
-1. **Prepare Dark Mode Assets**:
-   If the project doesn't have a specific `splash-dark.svg`, the assets generator will default to an icon on a black background for dark mode, which will override the splash background. Always ensure a dark variant exists:
+1. **Prepare Splash Assets with Safe Margin (Prevent Cropping)**:
+   Capacitor uses "Center Crop" when generating splash screens. If your source `splash.png` does not have enough transparent padding, the main graphic will be cut off on devices.
+   If you only have an `icon.png` (e.g., 1024x1024), you can generate a 2732x2732 `splash.png` with the icon safely centered using a quick Node.js script:
+   
+   ```bash
+   npm i -D sharp
+   ```
+   
+   Create and run `generate-splash.js`:
+   ```javascript
+   const sharp = require('sharp');
+   const path = require('path');
+
+   async function processSplash() {
+       const inputIcon = path.join(__dirname, 'resources', 'icon.png');
+       const outputSplash = path.join(__dirname, 'resources', 'splash.png');
+       const outputSplashDark = path.join(__dirname, 'resources', 'splash-dark.png');
+       
+       const background = {
+           create: { width: 2732, height: 2732, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } }
+       };
+       
+       const iconBuffer = await sharp(inputIcon).toBuffer();
+       const splashBuffer = await sharp(background)
+           .composite([{ input: iconBuffer, gravity: 'center' }])
+           .png()
+           .toBuffer();
+           
+       await sharp(splashBuffer).toFile(outputSplash);
+       await sharp(splashBuffer).toFile(outputSplashDark);
+       console.log('Created splash.png and splash-dark.png with safe margins!');
+   }
+   processSplash();
+   ```
+   ```bash
+   node generate-splash.js
+   rm generate-splash.js
+   ```
+
+2. **Prepare Dark Mode Assets**:
+   If you are using SVGs or already have a `splash.png` but no dark variant, the assets generator will default to a solid black background for dark mode. Always ensure a dark variant exists:
    ```bash
    # In PowerShell/bash
    cp resources/splash.svg resources/splash-dark.svg
+   # or for PNGs: cp resources/splash.png resources/splash-dark.png
    ```
 
-2. **Generate Assets**:
+3. **Generate Assets**:
    Run the following command to generate the Android assets from the `resources` folder:
    ```bash
    npx @capacitor/assets generate --android
    ```
    *Note: If the package is not installed, this will download and run it.*
 
-3. **Fix Splash Screen Background Configuration**:
+4. **Fix Splash Screen Background Configuration**:
    Capacitor's default splash screen generation often results in a stretched image or incorrect background. You must manually configure the background layer.
 
-   - **Step 3.1**: Check `android/app/src/main/res/values/styles.xml` (and `values-night/styles.xml` if it exists).
+   - **Step 4.1**: Check `android/app/src/main/res/values/styles.xml` (and `values-night/styles.xml` if it exists).
    - Ensure the `AppTheme.NoActionBarLaunch` style points to a custom background drawable, rather than just `@drawable/splash`:
      ```xml
      <style name="AppTheme.NoActionBarLaunch" parent="AppTheme.NoActionBar">
@@ -44,7 +84,7 @@ Invoke this skill when:
      </style>
      ```
 
-   - **Step 3.2**: Create or update `android/app/src/main/res/drawable/splash_background.xml` to compose the background color and the centered splash image.
+   - **Step 4.2**: Create or update `android/app/src/main/res/drawable/splash_background.xml` to compose the background color and the centered splash image.
      
      **Example with a Solid Background:**
      ```xml
@@ -88,7 +128,7 @@ Invoke this skill when:
      ```
    - **Color reference**: Use the `backgroundColor` defined in `capacitor.config.ts` (`plugins.SplashScreen.backgroundColor`) or the project's primary color.
 
-4. **Verify App Configuration & Hide Splash Screen Logic**:
+5. **Verify App Configuration & Hide Splash Screen Logic**:
    - Ensure `capacitor.config.ts` has the correct splash screen plugin settings (e.g., `splashFullScreen: true`, `splashImmersive: true`).
    - **IMPORTANT**: Set `launchAutoHide: false` in `capacitor.config.ts` so the splash screen isn't hidden prematurely.
    - Hide the splash screen manually when the main App component is mounted. For example, in React (`App.tsx`):
@@ -110,6 +150,6 @@ Invoke this skill when:
      }, []);
      ```
 
-5. **Testing & Committing**:
+6. **Testing & Committing**:
    - Run tests if required by the workspace rules.
    - If committing changes, remember to use `--no-pager` for git commands (e.g., `git --no-pager diff`) as per the workspace `RULES.md`.
