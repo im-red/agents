@@ -90,9 +90,11 @@ my-app/
 │   └── favicon.png
 ├── src/
 │   ├── components/           # Reusable UI components
-│   │   └── SideMenu.tsx
+│   │   ├── SideMenu.tsx
+│   │   └── SideMenu.scss     # Component-specific styles (optional)
 │   ├── pages/                # Page-level components (one per route)
 │   │   ├── HomePage.tsx
+│   │   ├── HomePage.scss     # Page-specific styles (optional)
 │   │   └── SettingsPage.tsx
 │   ├── data/                 # State management (React Context)
 │   │   └── AppContext.tsx
@@ -106,7 +108,7 @@ my-app/
 │   ├── util/                 # Utility functions
 │   │   └── helpers.ts
 │   ├── App.tsx               # Providers + router + menu
-│   ├── App.scss              # Global styles
+│   ├── App.scss              # Global & shared styles only
 │   └── main.tsx              # Ionic CSS imports + Capacitor init
 ├── capacitor.config.ts
 ├── ionic.config.json
@@ -120,8 +122,8 @@ my-app/
 
 | Directory | Purpose | Naming |
 |-----------|---------|--------|
-| `src/pages/` | Route-level components | `*Page.tsx` |
-| `src/components/` | Reusable UI components | `PascalCase.tsx` |
+| `src/pages/` | Route-level components + page styles | `*Page.tsx`, `*Page.scss` |
+| `src/components/` | Reusable UI components + component styles | `PascalCase.tsx`, `PascalCase.scss` |
 | `src/data/` | React Context providers | `*Context.tsx` |
 | `src/models/` | TypeScript interfaces & types | `index.ts` or `*.ts` |
 | `src/hooks/` | Custom hooks | `use*.ts` |
@@ -717,8 +719,11 @@ Providers wrap the router so all pages can `useContext`.
 | File | Purpose |
 |------|---------|
 | `src/theme/variables.css` | Design tokens only (CSS custom properties) |
-| `src/App.scss` | Global styles (layouts, custom components) |
-| `src/pages/*.scss` | Page-specific styles (optional) |
+| `src/App.scss` | Global & shared styles only (html/body resets, shared utility classes) |
+| `src/components/*.scss` | Component-specific styles (imported in component files) |
+| `src/pages/*.scss` | Page-specific styles (imported in page files) |
+
+**Rule**: If a CSS class is only used by one component or page, put it in that component/page's own `.scss` file. Only keep truly global styles (html/body resets) and shared utility classes (used by 2+ components/pages) in `App.scss`.
 
 ### 9.2 Design Tokens (`src/theme/variables.css`)
 
@@ -767,11 +772,14 @@ import './App.scss';
 
 ### 9.5 SCSS Support
 
-`sass` is included in devDependencies. Use `.scss` for page-specific styles:
+`sass` is included in devDependencies. Use `.scss` for page-specific and component-specific styles:
 
 ```tsx
 // In a page component
 import './MyPage.scss';
+
+// In a reusable component
+import './MyComponent.scss';
 ```
 
 ---
@@ -910,7 +918,7 @@ Use `crypto.randomUUID()` for IDs, `Date.now()` for timestamps.
 - [ ] Create `ionic.config.json`
 - [ ] Replace `index.html` with Capacitor version (Section 3.1)
 - [ ] Create `src/theme/variables.css` with design tokens
-- [ ] Create `src/App.scss` for global styles
+- [ ] Create `src/App.scss` for global & shared styles only
 - [ ] Set up `src/main.tsx` with Ionic CSS imports + Capacitor init
 - [ ] Set up `src/App.tsx` with `IonApp` + `IonReactRouter` + routes
 - [ ] Create `src/pages/` with first page following page anatomy (Section 6)

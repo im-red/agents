@@ -15,7 +15,7 @@ Your existing apps (`chengyujielong`, `memo-pads`, etc.) are already **Capacitor
 | Custom alert (`window.alert` / `confirm`) | `<IonAlert>` (styled, accessible) |
 | Custom action sheet (dropdown div) | `<IonActionSheet>` (bottom sheet) |
 | Manual Android back-button listener (100+ lines) | Auto-handled by `IonRouterOutlet` |
-| Monolithic `styles.css` (40-50KB) | `theme/variables.css` + `App.scss` + page SCSS |
+| Monolithic `styles.css` (40-50KB) | `theme/variables.css` + `App.scss` + component/page SCSS |
 | All components in `src/components/` | Separated into `src/pages/` + `src/components/` |
 
 ---
@@ -41,14 +41,22 @@ src/
 src/
 ├── components/          # Reusable UI components only
 │   ├── BoardCard.tsx
+│   ├── BoardCard.scss
 │   ├── Calendar.tsx
+│   ├── Calendar.scss
 │   ├── MarkSelector.tsx
+│   ├── MarkSelector.scss
 │   └── SideMenu.tsx
 ├── pages/               # Page-level components (one per route)
 │   ├── HomePage.tsx
+│   ├── HomePage.scss
 │   ├── BoardDetailPage.tsx
+│   ├── BoardDetailPage.scss
+│   ├── MarkManagementPage.tsx
+│   ├── MarkManagementPage.scss
 │   ├── SettingsPage.tsx
 │   └── AboutPage.tsx
+│   └── AboutPage.scss
 ├── data/                # State management (was context/ or inline)
 │   ├── BoardContext.tsx
 │   └── MarkSuiteContext.tsx
@@ -63,7 +71,7 @@ src/
 │   ├── useLocalStorageState.ts
 │   └── useAppVersion.ts
 ├── App.tsx              # Providers + router + menu
-├── App.scss             # Global styles
+├── App.scss             # Global & shared styles only
 └── main.tsx             # Ionic CSS imports + Capacitor init
 ```
 
@@ -429,9 +437,15 @@ if (confirm('Delete this item?')) { handleDelete(); }
 ### After: Split Architecture
 
 ```
-src/theme/variables.css    ← Design tokens only (CSS custom properties)
-src/App.scss               ← Global styles (layouts, component classes)
-src/pages/BoardDetail.scss ← Page-specific styles (optional)
+src/theme/variables.css       ← Design tokens only (CSS custom properties)
+src/App.scss                  ← Global & shared styles only (html/body, shared utility classes)
+src/components/Calendar.scss  ← Component-specific styles
+src/components/BoardCard.scss ← Component-specific styles
+src/components/MarkSelector.scss ← Component-specific styles
+src/pages/HomePage.scss       ← Page-specific styles
+src/pages/BoardDetailPage.scss   ← Page-specific styles
+src/pages/MarkManagementPage.scss ← Page-specific styles
+src/pages/AboutPage.scss      ← Page-specific styles
 ```
 
 **`src/theme/variables.css`** — Extract all `:root` variables:
@@ -449,7 +463,19 @@ src/pages/BoardDetail.scss ← Page-specific styles (optional)
 }
 ```
 
-**`src/App.scss`** — Everything else from `styles.css`, minus the variables and any styles now handled by Ionic components (you can remove custom header, side menu, overlay CSS).
+**`src/App.scss`** — Only truly global styles (html/body resets) and shared utility classes used by multiple components/pages (e.g., `.mark-grid`, `.overlay__text`). Component-specific and page-specific styles belong in their own `.scss` files.
+
+**Component styles** (`src/components/*.scss`) — Styles scoped to a single reusable component. Imported directly in the component file:
+```tsx
+// In a component file
+import './Calendar.scss';
+```
+
+**Page styles** (`src/pages/*.scss`) — Styles scoped to a single page route. Imported directly in the page file:
+```tsx
+// In a page file
+import './BoardDetailPage.scss';
+```
 
 ### CSS You Can DELETE After Migration
 
@@ -500,10 +526,13 @@ import './App.scss';
 npm install -D sass
 ```
 
-Then use `.scss` files for page-specific styles:
+Then use `.scss` files for page-specific and component-specific styles:
 ```tsx
 // In a page component
 import './BoardDetailPage.scss';
+
+// In a reusable component
+import './Calendar.scss';
 ```
 
 ---
@@ -681,7 +710,9 @@ Your existing config is already correct. Keep it as-is.
 - [ ] Rename `src/types/` → `src/models/`
 - [ ] Rename `src/utils/` → `src/util/`
 - [ ] Extract CSS variables from `styles.css` → `src/theme/variables.css`
-- [ ] Move remaining styles → `src/App.scss`
+- [ ] Move global/shared styles → `src/App.scss` (only html/body resets and shared utility classes)
+- [ ] Move component-specific styles → `src/components/*.scss` (imported in component files)
+- [ ] Move page-specific styles → `src/pages/*.scss` (imported in page files)
 - [ ] Delete `styles.css`
 
 ### Step 3: Convert Navigation
@@ -822,5 +853,5 @@ Convention: Use `outline` variants for inactive icons, filled for active.
 | Transitions | None (instant swap) | Slide-in/slide-out |
 | Deep linking | Not possible | URL-based (`/board/123`) |
 | State access | Prop drilling | Context + `useXyz()` hooks |
-| Styles | Monolithic `styles.css` | Split `variables.css` + `App.scss` |
+| Styles | Monolithic `styles.css` | Split `variables.css` + `App.scss` + component/page `.scss` |
 | Root element | `<div id="app">` | `<div id="root">` |
