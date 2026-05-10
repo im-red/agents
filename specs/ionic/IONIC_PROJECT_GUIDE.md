@@ -390,12 +390,56 @@ const BoardDetailPage: React.FC<BoardDetailPageProps> = ({ match }) => {
 };
 ```
 
-### 5.5 Android Back Button
+### 5.5 Android Hardware Back Button
 
-**No manual listener needed.** `IonRouterOutlet` automatically:
-- Pops route stack on back press
-- Closes modals/action sheets first
-- Exits app when no more history
+To properly handle the Android hardware back button (including exiting the app when there is no route history left), you should implement a custom back button handler. This component must be placed inside the `<IonReactRouter>`.
+
+```tsx
+import { useIonRouter } from '@ionic/react';
+import { App as CapacitorApp } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
+import type { BackButtonEvent } from '@ionic/core';
+
+// Component that handles back button - must be inside IonReactRouter
+const BackButtonHandler: React.FC = () => {
+  const ionRouter = useIonRouter();
+
+  React.useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    const handleBackButton = (event: Event) => {
+      const backButtonEvent = event as BackButtonEvent;
+      backButtonEvent.detail.register(-1, () => {
+        if (!ionRouter.canGoBack()) {
+          CapacitorApp.exitApp();
+        }
+      });
+    };
+
+    document.addEventListener('ionBackButton', handleBackButton);
+
+    return () => {
+      document.removeEventListener('ionBackButton', handleBackButton);
+    };
+  }, [ionRouter]);
+
+  return null;
+};
+```
+
+**Usage in `App.tsx`:**
+
+Place `<BackButtonHandler />` inside `<IonReactRouter>` so it has access to the routing context:
+
+```tsx
+<IonReactRouter>
+  <BackButtonHandler />
+  <SideMenu />
+  <IonRouterOutlet id="main">
+    {/* routes */}
+  </IonRouterOutlet>
+</IonReactRouter>
+```
 
 ---
 
