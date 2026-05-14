@@ -773,18 +773,22 @@ Providers wrap the router so all pages can `useContext`.
 
 ```css
 :root {
-  --primary: #3880ff;
-  --primary-dark: #3171e0;
-  --background: #ffffff;
-  --surface: #f4f5f8;
-  --text-main: #121212;
-  --text-muted: #666666;
-  --text-secondary: #9ca3af;
-  --border-color: #e2e8f0;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
-  --success: #22c55e;
-  --error: #eb445a;
+  --ion-color-primary: #3880ff;
+  --ion-color-primary-rgb: 56,128,255;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255,255,255;
+  --ion-color-primary-shade: #3171e0;
+  --ion-color-primary-tint: #4c8dff;
+
+  /* Fallbacks for light mode to ensure our custom SCSS works correctly */
+  /* Ionic doesn't define these explicitly for light mode, so we must */
+  --ion-background-color: #ffffff;
+  --ion-text-color: #121212;
+  --ion-color-step-50: #f4f5f8;
+  --ion-color-step-150: #e2e8f0;
+  --ion-color-step-400: #9ca3af;
+  --ion-color-medium: #666666;
+  --ion-color-danger: #eb445a;
 }
 ```
 

@@ -448,18 +448,17 @@ src/pages/MarkManagementPage.scss ← Page-specific styles
 src/pages/AboutPage.scss      ← Page-specific styles
 ```
 
-**`src/theme/variables.css`** — Extract all `:root` variables:
+**`src/theme/variables.css`** — Extract all `:root` variables. Convert custom colors to standard Ionic variables where possible, and provide light-mode fallbacks:
 ```css
 :root {
-  --primary: #3880ff;
-  --primary-dark: #3171e0;
-  --background: #ffffff;
-  --surface: #f4f5f8;
-  --text-main: #121212;
-  --text-muted: #666666;
-  --border-color: #e2e8f0;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  --error: #eb445a;
+  --ion-color-primary: #3880ff;
+  --ion-color-danger: #eb445a;
+  
+  /* Provide fallbacks for light mode so DevTools doesn't complain */
+  --ion-background-color: #ffffff;
+  --ion-text-color: #121212;
+  --ion-color-step-50: #f4f5f8;
+  --ion-color-medium: #666666;
 }
 ```
 
