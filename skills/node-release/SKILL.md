@@ -56,7 +56,7 @@ The command list must perform the following actions sequentially. **Do not outpu
 ```bash
 # 1. Commit the release
 git add CHANGELOG.md package.json package-lock.json
-git commit -m "chore: update changelog for vX.Y.Z"
+git commit -m "Release vX.Y.Z" -m "- Feature 1" -m "- Fix 1"
 
 # 2. Create a git tag
 git tag -a vX.Y.Z -m "Release vX.Y.Z" -m "- Feature 1" -m "- Fix 1"
