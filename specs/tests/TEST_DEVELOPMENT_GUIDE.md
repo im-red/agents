@@ -71,7 +71,8 @@ This document outlines the best practices for developing, running, troubleshooti
 When a test case fails, follow these steps to diagnose and fix the issue. **Always fix the root cause in the source code if necessary, not just the test.**
 
 ### Capture Browser and Network Logs
-Playwright allows you to capture browser console logs and network requests, which are invaluable for debugging React/Ionic errors, API failures, or missing state.
+**ALWAYS mind the console when test cases fail!** Playwright allows you to capture browser console logs and network requests, which are invaluable for debugging React/Ionic errors, API failures, or missing state. Many seemingly mysterious UI failures (like elements not appearing or timeouts) are caused by underlying JavaScript errors that are immediately visible in the console.
+
 ```typescript
 const browserLogs = [];
 page.on('console', msg => {
