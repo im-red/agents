@@ -44,8 +44,8 @@ This skill plans a release for a Node.js project by calculating the new version,
 
 The command list must perform the following actions sequentially. **Do not output commands for updating `CHANGELOG.md` or `package.json` as you must do that directly.**
 
-1. **Commit the release**: Command to create a git commit. The commit message **must** be formatted as `chore: update changelog for <RELEASE_VERSION>`.
-2. **Create a git tag**: Command to tag the release. The tag message **must** be a simplified version of the changelog. Multiple `-m` arguments should be used to support multiline messages.
+1. **Commit the release**: Command to create a git commit. The commit message **must** be a simplified version of the changelog. Multiple `-m` arguments should be used to support multiline messages.
+2. **Create a git tag**: Command to tag the release. The tag message **must** be the same as the commit message.
 3. **Switch to the release branch**: Command to checkout the release branch (e.g., `git checkout <release_branch>`).
 4. **Merge the current branch**: Command to merge the developing branch into the release branch (e.g., `git merge <current_branch>`).
 5. **Push to remote**: Command(s) to push the release branch and the new tag to the remote repository.
